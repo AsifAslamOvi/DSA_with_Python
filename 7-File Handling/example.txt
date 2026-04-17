@@ -1,0 +1,2 @@
+This is a line in the file.
+This file is used for demonstrating read and write operations.
