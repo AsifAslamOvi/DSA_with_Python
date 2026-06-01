@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DSA with Python — AsifAslamOvi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0e1a;
+      --bg2: #0f1525;
+      --bg3: #151c30;
+      --border: #1e2d4a;
+      --accent: #00d4ff;
+      --accent2: #7c3aed;
+      --accent3: #10b981;
+      --text: #e2e8f0;
+      --text2: #94a3b8;
+      --text3: #475569;
+      --yellow: #fbbf24;
+      --red: #f87171;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-sans: 'Syne', sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.3;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Glow orbs */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .orb1 {
+      width: 600px; height: 600px;
+      background: rgba(0, 212, 255, 0.06);
+      top: -200px; left: -200px;
+    }
+    .orb2 {
+      width: 500px; height: 500px;
+      background: rgba(124, 58, 237, 0.07);
+      bottom: -150px; right: -150px;
+    }
+
+    /* HEADER */
+    header {
+      position: relative;
+      z-index: 10;
+      padding: 40px 60px 30px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+      background: rgba(10, 14, 26, 0.8);
+      backdrop-filter: blur(20px);
+      position: sticky;
+      top: 0;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo-icon {
+      width: 42px; height: 42px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 16px;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .site-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .site-title span { color: var(--accent); }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    #last-updated {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text3);
+      letter-spacing: 0.05em;
+    }
+
+    .github-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text2);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      transition: all 0.2s;
+    }
+    .github-link:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(0, 212, 255, 0.05);
+    }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      z-index: 1;
+      padding: 60px 60px 40px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .hero-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--accent3);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .hero-label::before {
+      content: '';
+      width: 24px; height: 1px;
+      background: var(--accent3);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -2px;
+      margin-bottom: 16px;
+    }
+
+    .hero h1 .highlight {
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 1rem;
+      color: var(--text2);
+      max-width: 520px;
+      line-height: 1.7;
+      margin-bottom: 32px;
+      font-weight: 400;
+    }
+
+    /* STATS BAR */
+    .stats-bar {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+      margin-bottom: 48px;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .stat-value {
+      font-family: var(--font-mono);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.7rem;
+      color: var(--text3);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .stat-divider {
+      width: 1px;
+      height: 40px;
+      background: var(--border);
+      align-self: center;
+    }
+
+    /* SEARCH */
+    .search-wrap {
+      position: relative;
+      max-width: 420px;
+      margin-bottom: 48px;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text3);
+      font-size: 14px;
+    }
+
+    #search {
+      width: 100%;
+      padding: 12px 12px 12px 40px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    #search:focus { border-color: var(--accent); }
+    #search::placeholder { color: var(--text3); }
+
+    /* MAIN LAYOUT */
+    .main {
+      position: relative;
+      z-index: 1;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 60px 80px;
+    }
+
+    /* FOLDER GRID */
+    .folders-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 20px;
+    }
+
+    /* FOLDER CARD */
+    .folder-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+
+    .folder-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0, 212, 255, 0.08);
+    }
+
+    .folder-header {
+      padding: 18px 20px 14px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+
+    .folder-card:hover .folder-header {
+      background: rgba(0, 212, 255, 0.03);
+    }
+
+    .folder-icon-name {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .folder-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .folder-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      line-height: 1.3;
+    }
+
+    .folder-num {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text3);
+      letter-spacing: 0.08em;
+      margin-top: 2px;
+    }
+
+    .folder-badge {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      padding: 3px 8px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      color: var(--text3);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* FILE LIST */
+    .file-list {
+      padding: 8px 0;
+    }
+
+    .file-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 20px;
+      border-bottom: 1px solid rgba(30, 45, 74, 0.5);
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--text2);
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .file-item:last-child { border-bottom: none; }
+
+    .file-item:hover {
+      background: rgba(0, 212, 255, 0.04);
+      color: var(--text);
+    }
+
+    .file-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent3);
+      flex-shrink: 0;
+    }
+
+    .file-name {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .file-ext {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    .file-ext.ipynb { background: rgba(251, 191, 36, 0.12); color: var(--yellow); }
+    .file-ext.py { background: rgba(16, 185, 129, 0.12); color: var(--accent3); }
+    .file-ext.other { background: rgba(148, 163, 184, 0.1); color: var(--text3); }
+
+    .open-icon {
+      font-size: 11px;
+      color: var(--text3);
+      opacity: 0;
+      transition: opacity 0.15s;
+      flex-shrink: 0;
+    }
+    .file-item:hover .open-icon { opacity: 1; }
+
+    /* LOADING */
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 100px 0;
+      color: var(--text3);
+    }
+
+    .spinner {
+      width: 36px; height: 36px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading-text {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+    }
+
+    /* ERROR */
+    .error-msg {
+      text-align: center;
+      padding: 60px 20px;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--red);
+    }
+
+    /* EMPTY FOLDER */
+    .empty-folder {
+      padding: 16px 20px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text3);
+      font-style: italic;
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      padding: 40px 20px;
+      overflow-y: auto;
+    }
+
+    .modal-overlay.open { display: flex; align-items: flex-start; justify-content: center; }
+
+    .modal {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 900px;
+      overflow: hidden;
+      animation: slideUp 0.25s ease;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background: var(--bg3);
+    }
+
+    .modal-title {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--accent);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .modal-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .modal-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text2);
+      text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      transition: all 0.2s;
+    }
+    .modal-link:hover { border-color: var(--accent); color: var(--accent); }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text3);
+      cursor: pointer;
+      font-size: 20px;
+      line-height: 1;
+      padding: 4px;
+      transition: color 0.2s;
+    }
+    .modal-close:hover { color: var(--text); }
+
+    .modal-body {
+      padding: 24px;
+      overflow-x: auto;
+    }
+
+    /* Code viewer */
+    .code-viewer {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .code-toolbar {
+      padding: 10px 16px;
+      background: var(--bg3);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .code-dots {
+      display: flex;
+      gap: 6px;
+    }
+    .code-dots span {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+    }
+    .dot-r { background: #ff5f57; }
+    .dot-y { background: #febc2e; }
+    .dot-g { background: #28c840; }
+
+    .code-lang {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text3);
+      letter-spacing: 0.1em;
+    }
+
+    pre {
+      padding: 20px;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      line-height: 1.7;
+      color: var(--text);
+      white-space: pre-wrap;
+      word-break: break-all;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+
+    /* Notebook cells */
+    .nb-cell {
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .nb-cell-type {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      font-family: var(--font-mono);
+      font-size: 0.63rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nb-cell-type.code { background: rgba(0, 212, 255, 0.06); color: var(--accent); }
+    .nb-cell-type.markdown { background: rgba(16, 185, 129, 0.06); color: var(--accent3); }
+
+    .nb-content { padding: 14px 16px; }
+
+    .nb-output {
+      border-top: 1px solid var(--border);
+      padding: 10px 16px;
+      background: rgba(0, 0, 0, 0.2);
+      font-family: var(--font-mono);
+      font-size: 0.73rem;
+      color: var(--text2);
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .output-label {
+      font-size: 0.6rem;
+      color: var(--text3);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    /* Footer */
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 24px 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-text {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text3);
+    }
+
+    .footer-text a { color: var(--accent); text-decoration: none; }
+    .footer-text a:hover { text-decoration: underline; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header { padding: 20px 24px; }
+      .hero { padding: 40px 24px 30px; }
+      .main { padding: 0 24px 60px; }
+      footer { padding: 20px 24px; }
+      .hero h1 { font-size: 2rem; letter-spacing: -1px; }
+      .folders-grid { grid-template-columns: 1fr; }
+      .stats-bar { gap: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-left">
+    <div class="logo-icon">py</div>
+    <div>
+      <div class="site-title">DSA <span>with Python</span></div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span id="last-updated">fetching latest commit...</span>
+    <a class="github-link" href="https://github.com/AsifAslamOvi/DSA_with_Python" target="_blank">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      View on GitHub
+    </a>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">Open Source Learning</div>
+  <h1>Data Structures &<br><span class="highlight">Algorithms</span></h1>
+  <p>A complete DSA course implemented in Python — from basics to recursion. Browse all notebooks and source files below.</p>
+
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-value" id="stat-folders">—</div>
+      <div class="stat-label">Modules</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <div class="stat-value" id="stat-files">—</div>
+      <div class="stat-label">Files</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <div class="stat-value" id="stat-notebooks">—</div>
+      <div class="stat-label">Notebooks</div>
+    </div>
+  </div>
+
+  <div class="search-wrap">
+    <span class="search-icon">⌕</span>
+    <input type="text" id="search" placeholder="Search files or topics..."/>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main class="main">
+  <div id="folders-container">
+    <div class="loading">
+      <div class="spinner"></div>
+      <div class="loading-text">Loading repository...</div>
+    </div>
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-text">
+    Built for <a href="https://github.com/AsifAslamOvi" target="_blank">@AsifAslamOvi</a> · Fetches live data from GitHub API
+  </div>
+  <div class="footer-text" id="commit-info">—</div>
+</footer>
+
+<!-- FILE MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Loading...</div>
+      <div class="modal-actions">
+        <a class="modal-link" id="modal-github-link" href="#" target="_blank">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </a>
+        <a class="modal-link" id="modal-nbviewer-link" href="#" target="_blank" style="display:none">
+          📓 nbviewer
+        </a>
+        <button class="modal-close" id="modal-close">✕</button>
+      </div>
+    </div>
+    <div class="modal-body" id="modal-body">
+      <div class="loading"><div class="spinner"></div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const REPO = 'AsifAslamOvi/DSA_with_Python';
+  const BRANCH = 'main';
+  const API = 'https://api.github.com';
+  const RAW = 'https://raw.githubusercontent.com';
+  const SKIP = ['venv', '.gitignore', '.github'];
+
+  let allFoldersData = [];
+
+  // ─── FETCH REPO TREE ──────────────────────────────────────────────────────
+  async function loadRepo() {
+    try {
+      // Get latest commit info
+      const commitRes = await fetch(`${API}/repos/${REPO}/commits/${BRANCH}`);
+      const commitData = await commitRes.json();
+      const sha = commitData.sha.slice(0, 7);
+      const date = new Date(commitData.commit.author.date);
+      const ago = timeAgo(date);
+
+      document.getElementById('last-updated').textContent = `Last commit: ${ago}`;
+      document.getElementById('commit-info').textContent =
+        `${sha} · ${commitData.commit.message.slice(0, 60)}`;
+
+      // Get tree
+      const treeRes = await fetch(`${API}/repos/${REPO}/git/trees/${BRANCH}?recursive=1`);
+      const treeData = await treeRes.json();
+
+      processTree(treeData.tree);
+    } catch (e) {
+      document.getElementById('folders-container').innerHTML =
+        `<div class="error-msg">⚠ Could not load repository. GitHub API rate limit may be exceeded.<br>Try again in a minute.</div>`;
+    }
+  }
+
+  // ─── PROCESS TREE ─────────────────────────────────────────────────────────
+  function processTree(tree) {
+    const folders = {};
+
+    for (const item of tree) {
+      if (item.type !== 'blob') continue;
+      const parts = item.path.split('/');
+      if (parts.length < 2) continue;
+
+      const folder = parts[0];
+      if (SKIP.some(s => folder.startsWith(s))) continue;
+
+      const file = parts.slice(1).join('/');
+      if (!folders[folder]) folders[folder] = [];
+      folders[folder].push({ name: file, path: item.path });
+    }
+
+    // Sort folders naturally
+    const sortedFolders = Object.entries(folders)
+      .sort(([a], [b]) => {
+        const na = parseInt(a) || 999;
+        const nb = parseInt(b) || 999;
+        return na - nb || a.localeCompare(b);
+      });
+
+    allFoldersData = sortedFolders;
+
+    // Stats
+    let totalFiles = 0, totalNB = 0;
+    for (const [, files] of sortedFolders) {
+      totalFiles += files.length;
+      totalNB += files.filter(f => f.name.endsWith('.ipynb')).length;
+    }
+
+    animateNumber('stat-folders', sortedFolders.length);
+    animateNumber('stat-files', totalFiles);
+    animateNumber('stat-notebooks', totalNB);
+
+    renderFolders(sortedFolders);
+  }
+
+  // ─── RENDER ───────────────────────────────────────────────────────────────
+  function renderFolders(folders) {
+    const container = document.getElementById('folders-container');
+    if (!folders.length) {
+      container.innerHTML = '<div class="error-msg">No folders found.</div>';
+      return;
+    }
+
+    container.innerHTML = `<div class="folders-grid">${folders.map(renderCard).join('')}</div>`;
+  }
+
+  function renderCard([folder, files]) {
+    const num = folder.match(/^(\d+)/)?.[1];
+    const name = folder.replace(/^\d+-/, '');
+    const emoji = folderEmoji(name);
+
+    const fileItems = files.map(f => {
+      const ext = f.name.split('.').pop().toLowerCase();
+      const extClass = ext === 'ipynb' ? 'ipynb' : ext === 'py' ? 'py' : 'other';
+      const ghUrl = `https://github.com/${REPO}/blob/${BRANCH}/${encodeURIComponent(f.path)}`;
+
+      return `<div class="file-item" onclick="openFile('${escHtml(f.path)}', '${escHtml(f.name)}', '${ext}')">
+        <span class="file-dot" style="background:${extClass === 'ipynb' ? 'var(--yellow)' : extClass === 'py' ? 'var(--accent3)' : 'var(--text3)'}"></span>
+        <span class="file-name">${escHtml(f.name)}</span>
+        <span class="file-ext ${extClass}">.${ext}</span>
+        <span class="open-icon">↗</span>
+      </div>`;
+    }).join('');
+
+    return `<div class="folder-card" data-folder="${escHtml(folder.toLowerCase())}">
+      <div class="folder-header">
+        <div class="folder-icon-name">
+          <span class="folder-icon">${emoji}</span>
+          <div>
+            <div class="folder-name">${escHtml(name)}</div>
+            ${num ? `<div class="folder-num">MODULE ${num.padStart(2, '0')}</div>` : ''}
+          </div>
+        </div>
+        <span class="folder-badge">${files.length} file${files.length !== 1 ? 's' : ''}</span>
+      </div>
+      <div class="file-list">
+        ${fileItems || '<div class="empty-folder">No files</div>'}
+      </div>
+    </div>`;
+  }
+
+  // ─── OPEN FILE MODAL ──────────────────────────────────────────────────────
+  async function openFile(path, name, ext) {
+    const overlay = document.getElementById('modal-overlay');
+    const titleEl = document.getElementById('modal-title');
+    const bodyEl = document.getElementById('modal-body');
+    const ghLink = document.getElementById('modal-github-link');
+    const nbLink = document.getElementById('modal-nbviewer-link');
+
+    titleEl.textContent = path;
+    bodyEl.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+    ghLink.href = `https://github.com/${REPO}/blob/${BRANCH}/${path.split('/').map(encodeURIComponent).join('/')}`;
+
+    if (ext === 'ipynb') {
+      nbLink.style.display = 'flex';
+      nbLink.href = `https://nbviewer.org/github/${REPO}/blob/${BRANCH}/${path.split('/').map(encodeURIComponent).join('/')}`;
+    } else {
+      nbLink.style.display = 'none';
+    }
+
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+
+    try {
+      const rawUrl = `${RAW}/${REPO}/${BRANCH}/${path.split('/').map(encodeURIComponent).join('/')}`;
+      const res = await fetch(rawUrl);
+      const text = await res.text();
+
+      if (ext === 'ipynb') {
+        renderNotebook(bodyEl, text);
+      } else {
+        renderCode(bodyEl, text, ext, name);
+      }
+    } catch {
+      bodyEl.innerHTML = '<div class="error-msg">Could not load file content.</div>';
+    }
+  }
+
+  function renderCode(el, content, ext, name) {
+    el.innerHTML = `<div class="code-viewer">
+      <div class="code-toolbar">
+        <div class="code-dots">
+          <span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span>
+        </div>
+        <span class="code-lang">${escHtml(name)}</span>
+        <span class="code-lang">.${ext}</span>
+      </div>
+      <pre>${escHtml(content)}</pre>
+    </div>`;
+  }
+
+  function renderNotebook(el, raw) {
+    let nb;
+    try { nb = JSON.parse(raw); } catch {
+      el.innerHTML = '<div class="error-msg">Could not parse notebook JSON.</div>';
+      return;
+    }
+
+    const cells = nb.cells || [];
+    if (!cells.length) {
+      el.innerHTML = '<div class="error-msg">Empty notebook.</div>';
+      return;
+    }
+
+    const html = cells.map((cell, i) => {
+      const type = cell.cell_type;
+      const src = Array.isArray(cell.source) ? cell.source.join('') : (cell.source || '');
+      const outputs = (cell.outputs || []).map(o => {
+        const text = o.text
+          ? (Array.isArray(o.text) ? o.text.join('') : o.text)
+          : o['text/plain']
+            ? (Array.isArray(o['text/plain']) ? o['text/plain'].join('') : o['text/plain'])
+            : '';
+        return text ? `<div class="nb-output"><div class="output-label">Output</div>${escHtml(text)}</div>` : '';
+      }).join('');
+
+      return `<div class="nb-cell">
+        <div class="nb-cell-type ${type}">${type === 'code' ? '⌨ Code' : '📝 Markdown'} · [${i + 1}]</div>
+        <div class="nb-content"><pre style="padding:0;max-height:none;border:none;background:none">${escHtml(src)}</pre></div>
+        ${outputs}
+      </div>`;
+    }).join('');
+
+    el.innerHTML = html;
+  }
+
+  // ─── MODAL CLOSE ──────────────────────────────────────────────────────────
+  document.getElementById('modal-close').addEventListener('click', closeModal);
+  document.getElementById('modal-overlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('modal-overlay')) closeModal();
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  function closeModal() {
+    document.getElementById('modal-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // ─── SEARCH ───────────────────────────────────────────────────────────────
+  document.getElementById('search').addEventListener('input', e => {
+    const q = e.target.value.toLowerCase().trim();
+    if (!q) { renderFolders(allFoldersData); return; }
+
+    const filtered = allFoldersData
+      .map(([folder, files]) => {
+        const matchFolder = folder.toLowerCase().includes(q);
+        const matchedFiles = files.filter(f =>
+          f.name.toLowerCase().includes(q) || f.path.toLowerCase().includes(q)
+        );
+        if (matchFolder) return [folder, files];
+        if (matchedFiles.length) return [folder, matchedFiles];
+        return null;
+      })
+      .filter(Boolean);
+
+    renderFolders(filtered);
+  });
+
+  // ─── HELPERS ──────────────────────────────────────────────────────────────
+  function folderEmoji(name) {
+    const n = name.toLowerCase();
+    if (n.includes('python') || n.includes('basic')) return '🐍';
+    if (n.includes('control') || n.includes('flow')) return '🔀';
+    if (n.includes('data structure')) return '🗂️';
+    if (n.includes('function')) return '⚙️';
+    if (n.includes('search') || n.includes('sort')) return '🔍';
+    if (n.includes('module') || n.includes('package')) return '📦';
+    if (n.includes('file')) return '📁';
+    if (n.includes('exception')) return '⚠️';
+    if (n.includes('class') || n.includes('object')) return '🏗️';
+    if (n.includes('array') || n.includes('list')) return '📊';
+    if (n.includes('advance')) return '🚀';
+    if (n.includes('recursi')) return '🔄';
+    return '📂';
+  }
+
+  function escHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function timeAgo(date) {
+    const seconds = Math.floor((Date.now() - date) / 1000);
+    if (seconds < 60) return 'just now';
+    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+    return `${Math.floor(seconds / 86400)}d ago`;
+  }
+
+  function animateNumber(id, target) {
+    const el = document.getElementById(id);
+    let cur = 0;
+    const step = Math.ceil(target / 20);
+    const timer = setInterval(() => {
+      cur = Math.min(cur + step, target);
+      el.textContent = cur;
+      if (cur >= target) clearInterval(timer);
+    }, 40);
+  }
+
+  // ─── INIT ─────────────────────────────────────────────────────────────────
+  loadRepo();
+</script>
+</body>
+</html>
